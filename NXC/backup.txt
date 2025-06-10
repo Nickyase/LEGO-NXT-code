@@ -1,0 +1,88 @@
+#define SENSOR1 IN_1
+#define SENSOR2 IN_3
+#define MOTOR_LEFT OUT_B
+#define MOTOR_RIGHT OUT_C
+#define ULTRASONIC IN_4
+#define NEAR 15 //cm
+
+    void avoid_obstacle(){
+        
+    }
+
+    void move_forward(int power, int degrees, int time){
+        OnFwd(OUT_BC, power, degrees, time);
+    }
+
+    // void turn_left(int power, int degrees, int time){
+    //     OnFwd(OUT_B, power, degrees, time);
+    //     OnRev(OUT_C, power, degrees, time);
+    // }
+
+    // void turn_right(int power, int degrees, int time){
+    //     OnFwd(OUT_C, power, degrees, time);
+    //     OnRev(OUT_B, power, degrees, time);
+    //}
+
+    void move_backward(int power, int degrees, int time){
+        OnRev(OUT_BC, power, degrees, time);
+    }
+
+    void stop_robot(){
+        Off(OUT_BC);
+        StopAllTasks(); // melhor forma de parar totalmente
+    }
+
+
+task main() {
+    SetSensorColorFull(SENSOR1);
+    SetSensorColorFull(SENSOR2);
+    SetSensorLowspeed(ULTRASONIC);
+
+    while (true) {
+        int color1 = Sensor(SENSOR1);
+        int color2 = Sensor(SENSOR2);
+
+        // Limpa o display
+        ClearScreen();
+
+        // Exibe os valores lidos pelos sensores
+        NumOut(0, LCD_LINE1, color1);
+        NumOut(0, LCD_LINE2, color2);
+
+        if (SensorUS(IN_4) > NEAR) {
+        
+        // Ajuste os valores conforme necessário
+        if (color1 == 5 && color2 == 5) { // Vermelho
+            stop_robot();
+        } 
+        else if (color1 == 6 && color2 == 6) { // Branco
+            move_forward(50);
+        } 
+        else if (color1 == 1 && color2 == 1) { // Preto
+            move_forward(50);
+        } 
+        else if (color1 == 3 && color2 == 3) { // Verde
+            move_forward(50);
+        } 
+        else if (color1 == 6 && color2 == 1) {
+            OnFwd(OUT_B, 25);
+            OnRev()
+        } 
+        else if (color1 == 1 && color2 == 6) {
+            turn_right(100);
+            turn_left(60);
+        } 
+        else if (color1 == 3 && color2 == 6) {
+            turn_left(100);
+        } 
+        else if (color1 == 6 && color2 == 3) {
+            turn_right(100);
+        }
+
+        Wait(200); // Pequena pausa para atualização da tela
+    }
+    else {
+        avoid_obstacle();
+    }
+}
+}
